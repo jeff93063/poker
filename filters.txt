@@ -5,4 +5,4 @@
 ! Expires: 4 days (update frequency)
 ! Homepage:
 !
-ycombinator.com##*.style(font-size:30px !important)
+ycombinator.com##*:style(font-size:30px !important)
