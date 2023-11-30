@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<link rel="manifest" href="manifest.json" />
+<meta charset="UTF-8">
+<meta name="darkreader-lock">
+<style type="text/css">
+html { font-size: 12px; }
+body {
+	margin:0px;
+	padding:0px;
+	background-color:#166616;
+}
+span {
+	/*
+	display:inline-block;
+	width:15vw;
+	height:auto;
+	aspect-ratio:3/4;
+	border:0px;
+	text-align:center;
+	*/
+	line-height:27vw;
+	margin:1vw 1vw 1vw 0;
+	filter: drop-shadow(0 0 .5vw);
+	border-radius:3vw;
+	background-color:white;
+	padding:1.6vw 0;
+	font-size:17vw;
+}
+span:first-child { margin: 1vw 1vw 1vw 1vw; }
+button {
+	display:block;
+	width:calc(100% - 2vw);
+	margin: 0 1rem;
+	font-size: 10vw;
+}
+a {
+	text-decoration:none;
+	color:black;
+}
+b {
+	font-weight: normal;
+	color:red;
+}
+</style>
+<span><a href="#" onClick="holdThis(this);" id="0">&#x1F0A0;</a></span>
+<span><a href="#" onClick="holdThis(this);" id="1">&#x1F0A0;</a></span>
+<span><a href="#" onClick="holdThis(this);" id="2">&#x1F0A0;</a></span>
+<span><a href="#" onClick="holdThis(this);" id="3">&#x1F0A0;</a></span>
+<span><a href="#" onClick="holdThis(this);" id="4">&#x1F0A0;</a></span>
+<button id="theOnlyButton" onClick="update();">Deal</button>
+<script type="text/javascript">
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker
+      .register("/serviceWorker.js")
+      .then(res => console.log("service worker registered"))
+      .catch(err => console.log("service worker not registered", err))
+  })
+}
+
+
+var $ = function(id) { return document.getElementById(id); };
+
+var phase = 1;
+var holdArray = null;
+var myDeck = null;
+
+function shuffle(array) { //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+	let currentIndex = array.length, randomIndex;
+	while (currentIndex > 0) {
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex--;
+		[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+	}
+	return array;
+}
+
+function cardToSymbol(card){
+	var red = false;
+	switch(card[0]) {
+		case 0:
+			suitCode = "A";
+			break;
+		case 1:
+			suitCode = "B";
+			red = true;
+			break;
+		case 2:
+			suitCode = "C";
+			red = true;
+			break;
+		case 3:
+			suitCode = "D";
+			break;
+	}
+	if(card[1] > 10){
+		valueCode = card[1] + 2;
+	} else {
+		valueCode = card[1] + 1;
+	}
+	var code = "1F0" + suitCode + valueCode.toString(16);
+	//return "\\u{1F0" + suitCode + valueCode + "}";
+	var returnString = String.fromCodePoint(parseInt(code,16));
+	if(red){
+		returnString = "<b>" + returnString + "</b>";
+	}
+	return returnString;
+}
+
+class deck {
+	constructor(num) {
+		this.deckArray = [];
+		for (let i = 0; i < 4; i++) {
+			for (let j = 0; j < 13; j++) {
+				for (let k = 0; k < num; k++) {
+					this.deckArray.push([i,j]);
+				}
+			}
+		}
+		this.shuffle();
+	}
+	draw() {
+		return this.deckArray.pop();
+	}
+	shuffle() {
+		shuffle(this.deckArray);
+	}
+}
+
+
+function update(){
+	if(phase == 1){ //initial deal
+		myDeck = new deck(1);
+		holdArray = [false,false,false,false,false];
+		for (i=0; i<5; i++){
+			$(i.toString()).innerHTML = cardToSymbol(myDeck.draw());
+		}
+		$("theOnlyButton").innerText = "Draw";
+		phase = 2;
+	} else { //draw
+		for(i=0; i<holdArray.length; i++){ //replace non-held cards
+			if(holdArray[i] == false){
+				$(i.toString()).innerHTML = cardToSymbol(myDeck.draw());
+			}
+		}
+		//score hand
+		$("theOnlyButton").innerText = "Deal";
+		phase = 1;
+	}
+}
+function holdThis(anchorElement){
+	if(holdArray[parseInt(anchorElement.id)] == true){
+		holdArray[parseInt(anchorElement.id)] = false;
+	} else {
+		holdArray[parseInt(anchorElement.id)] = true;
+	}
+	//console.log(holdArray);
+}
+</script>
+</html>
