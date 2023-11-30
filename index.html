@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<!--<link rel="manifest" href="site.webmanifest">-->
+<!--<link rel="manifest" href="site.webmanifest"> incorporated this into manifest.json-->
 <link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
@@ -92,6 +92,7 @@ var $ = function(id) { return document.getElementById(id); };
 var phase = 1;
 var holdArray = null;
 var myDeck = null;
+var handArray = [];
 
 function shuffle(array) { //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 	let currentIndex = array.length, randomIndex;
@@ -157,25 +158,35 @@ class deck {
 
 
 function update(){
-	if(phase == 1){ //initial deal
+	if(phase == 1){ //deal
 		myDeck = new deck(1);
 		holdArray = [false,false,false,false,false];
 		for (i=0; i<5; i++){
-			$(i.toString()).innerHTML = cardToSymbol(myDeck.draw());
+			var thisCard = myDeck.draw();
+			$(i.toString()).innerHTML = cardToSymbol(thisCard);
+			handArray.push(thisCard);
 		}
+		console.log(handArray);
 		$("theOnlyButton").innerText = "Draw";
 		phase = 2;
 	} else { //draw
+		var newHand = [];
 		for(i=0; i<holdArray.length; i++){ //replace non-held cards
 			if(holdArray[i] == false){
-				$(i.toString()).innerHTML = cardToSymbol(myDeck.draw());
+				var thisCard = myDeck.draw();
+				$(i.toString()).innerHTML = cardToSymbol(thisCard);
+				newHand.push(thisCard);
+			} else {
+				newHand.push(handArray[i]);
 			}
 		}
+		handArray = newHand;
 		//score hand
 		var holdTags = document.getElementsByClassName("holdTag");
 		for (j=0; j<holdTags.length; j++){
 			holdTags[j].style.visibility = "hidden";
 		}
+		console.log(handArray);
 		$("theOnlyButton").innerText = "Deal";
 		phase = 1;
 	}
