@@ -90,11 +90,11 @@ span#messageBar {
 </head>
 <body>
 <span id="messageBar">&nbsp;</span>
-<span class="card" id="first"><a href="#" onClick="holdThis(this);"><span class="holdTag">Hold</span><span id="0">&#x1F0A0;</span></a></span>
-<span class="card"><a href="#" onClick="holdThis(this);"><span class="holdTag">Hold</span><span id="1">&#x1F0A0;</span></a></span>
-<span class="card"><a href="#" onClick="holdThis(this);"><span class="holdTag">Hold</span><span id="2">&#x1F0A0;</span></a></span>
-<span class="card"><a href="#" onClick="holdThis(this);"><span class="holdTag">Hold</span><span id="3">&#x1F0A0;</span></a></span>
-<span class="card"><a href="#" onClick="holdThis(this);"><span class="holdTag">Hold</span><span id="4">&#x1F0A0;</span></a></span>
+<span class="card" id="first"><a href="#" onClick="holdThis(event,this);"><span class="holdTag">Hold</span><span id="0">&#x1F0A0;</span></a></span>
+<span class="card"><a href="#" onClick="holdThis(event,this);"><span class="holdTag">Hold</span><span id="1">&#x1F0A0;</span></a></span>
+<span class="card"><a href="#" onClick="holdThis(event,this);"><span class="holdTag">Hold</span><span id="2">&#x1F0A0;</span></a></span>
+<span class="card"><a href="#" onClick="holdThis(event,this);"><span class="holdTag">Hold</span><span id="3">&#x1F0A0;</span></a></span>
+<span class="card"><a href="#" onClick="holdThis(event,this);"><span class="holdTag">Hold</span><span id="4">&#x1F0A0;</span></a></span>
 <button id="theOnlyButton" onClick="update();">Deal</button>
 <div id="balanceDisplay"></div>
 <script type="text/javascript">
@@ -385,7 +385,8 @@ function update(){
 		phase = 1;
 	}
 }
-function holdThis(anchorElement){
+function holdThis(event,anchorElement){
+	event.preventDefault();
 	if(phase==2){
 		//console.log(anchorElement.children[1].id);
 		if(holdArray[parseInt(anchorElement.children[1].id)] == true){
