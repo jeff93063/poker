@@ -13,7 +13,7 @@
 <link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
-<!--                               -->
+<!--							   -->
 
 
 <meta charset="UTF-8">
@@ -36,7 +36,7 @@ span.card {
 	padding:1.6vw 0;
 	font-size:17vw;
 }
-span.card:first-child { margin: 1vw 1vw 1vw 1vw; }
+span.card#first { margin: 1vw 1vw 1vw 1vw; }
 button {
 	display:block;
 	width:calc(100% - 2vw);
@@ -68,24 +68,67 @@ b {
 	font-weight: normal;
 	color:red;
 }
+div#balanceDisplay {
+	color:white;
+	font-size:2vw;
+	text-align:center;
+	line-height:3vw;
+}
+span#messageBar {
+	width:100%;
+	color:white;
+	position:absolute;
+	top:12vw;
+	background-color:#000000c0;
+	font-size: 2vw;
+	text-align:center;
+	line-height:3vw;
+	z-index:5;
+	visibility:hidden;
+}
 </style>
 </head>
 <body>
-<span class="card"><a href="#" onClick="holdThis(this);"><span class="holdTag">Hold</span><span id="0">&#x1F0A0;</span></a></span>
+<span id="messageBar">&nbsp;</span>
+<span class="card" id="first"><a href="#" onClick="holdThis(this);"><span class="holdTag">Hold</span><span id="0">&#x1F0A0;</span></a></span>
 <span class="card"><a href="#" onClick="holdThis(this);"><span class="holdTag">Hold</span><span id="1">&#x1F0A0;</span></a></span>
 <span class="card"><a href="#" onClick="holdThis(this);"><span class="holdTag">Hold</span><span id="2">&#x1F0A0;</span></a></span>
 <span class="card"><a href="#" onClick="holdThis(this);"><span class="holdTag">Hold</span><span id="3">&#x1F0A0;</span></a></span>
 <span class="card"><a href="#" onClick="holdThis(this);"><span class="holdTag">Hold</span><span id="4">&#x1F0A0;</span></a></span>
 <button id="theOnlyButton" onClick="update();">Deal</button>
+<div id="balanceDisplay"></div>
 <script type="text/javascript">
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function() {
-    navigator.serviceWorker
-      .register("/serviceWorker.js")
-      .then(res => console.log("service worker registered"))
-      .catch(err => console.log("service worker not registered", err))
+	navigator.serviceWorker
+	  .register("/serviceWorker.js")
+	  .then(res => console.log("service worker registered"))
+	  .catch(err => console.log("service worker not registered", err))
   })
+}
+
+function setCookie(name,value,days) { //https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
+	var expires = "";
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime() + (days*24*60*60*1000));
+		expires = "; expires=" + date.toUTCString();
+	}
+	document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+function getCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+}
+function eraseCookie(name) {   
+	document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
 
@@ -95,6 +138,12 @@ var phase = 1;
 var holdArray = null;
 var myDeck = null;
 var handArray = [];
+var bet = 10;
+var balance = getCookie("balance");
+if(!(balance > 0)){
+	balance = 500;
+}
+$("balanceDisplay").innerText = "Balance: $" + balance.toString();
 
 function shuffle(array) { //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 	let currentIndex = array.length, randomIndex;
@@ -138,6 +187,139 @@ function cardToSymbol(card){
 	return returnString;
 }
 
+
+function scoreHand(){
+	console.log("unsorted hand:" + handArray);
+	var winning = 0;
+	var resultText = "";
+	seen_suits = [];
+	seen_numbers = [];
+	//console.log(handArray);
+	handArray.sort(compareSecondColumn);
+	//console.log(handArray);
+	console.log("sorted hand:" + handArray);
+	
+	for(i=0; i<5; i++){
+		var suit_already_in = false;
+		for(j=0; j<seen_suits.length; j++){
+			if(seen_suits[j][0] == handArray[i][0]){
+				seen_suits[j] = [seen_suits[j][0], seen_suits[j][1] + 1];
+				suit_already_in = true;
+			}
+		}
+		if(!suit_already_in){
+			seen_suits.push([handArray[i][0], 1]);
+		}
+		var number_already_in = false;
+		for(k=0; k<seen_numbers.length; k++){
+			if(seen_numbers[k][0] == handArray[i][1]){
+				seen_numbers[k] = [seen_numbers[k][0], seen_numbers[k][1] + 1];
+				number_already_in = true;
+			}
+		}
+		if(!number_already_in){
+			seen_numbers.push([handArray[i][1], 1]);
+		}
+	}
+	console.log("seen_suits:" + seen_suits);
+	console.log("unsorted seen_numbers:" + seen_numbers);
+	
+	var flush = false;
+	var royal = false;
+	var four = false;
+	var three = false;
+	var fullhouse = false;
+	var twopair = false;
+	var jacks = false;
+	
+	if(seen_suits.length == 1){
+		flush = true;
+	}
+	
+	if(seen_numbers.length == 5){
+		if(seen_numbers[0][0] == 0 && seen_numbers[1][0] == 9 && seen_numbers[2][0] == 10 && seen_numbers[3][0] == 11 && seen_numbers[4][0] == 12){
+			royal = true;
+		}
+	}
+	
+	straight = true;
+	for(i=1; i<5; i++){
+		if(handArray[i][1] != handArray[i-1][1] + 1){
+			straight = false;
+		}
+	}
+	seen_numbers.sort(compareSecondColumn);
+	seen_numbers.reverse();
+	console.log("sorted seen_numbers:" + seen_numbers);
+
+	if(seen_numbers[0][1] == 4){
+		four = true;
+	} else if(seen_numbers[0][1] == 3){
+		if(seen_numbers[1][1] == 2){
+			fullhouse = true;
+		} else {
+			three = true;
+		}
+	} else if(seen_numbers[0][1] == 2){
+		if(seen_numbers[1][1] == 2){
+			twopair = true;
+		} else if(seen_numbers[0][0] > 9 || seen_numbers[0][0] == 0){
+			jacks = true;
+		}
+	}
+
+	console.log("flush:" + flush.toString() + " royal:" + royal.toString() + " four:" + four.toString() + " three:" + three.toString() + " fullhouse:" + fullhouse.toString() + " twopair:" + twopair.toString() + " jacks:" + jacks.toString());
+
+	if(flush){
+		if(royal){
+			winning = 250 * bet;
+			resultText = "Royal Flush! You win $" + winning.toString();
+		} else if(straight){
+			winning = 50 * bet;
+			resultText = "Straight Flush! You win $" + winning.toString();
+		} else {
+			winning = 6 * bet;
+			resultText = "Flush! You win $" + winning.toString();
+		}
+	} else if(straight || royal){ //royal = ace high straight
+		winning = 4 * bet;
+		resultText = "Straight! You win $" + winning.toString();
+	} else if(four){
+		winning = 25 * bet;
+		resultText = "Four of a Kind! You win $" + winning.toString();
+	} else if(fullhouse){
+		winning = 9 * bet;
+		resultText = "Full House! You win $" + winning.toString();
+	} else if(three){
+		winning = 3 * bet;
+		resultText = "Three of a Kind! You win $" + winning.toString();
+	} else if(twopair){
+		winning = 2 * bet;
+		resultText = "Two Pair! You win $" + winning.toString();
+	} else if(jacks){
+		winning = bet;
+		resultText = "Jacks or Better! You win $" + winning.toString();
+	} else{
+		winning = 0;
+		resultText = "Try again.";
+	}
+	balance += winning;
+	//===================
+	$("balanceDisplay").innerText = "Balance: $" + balance.toString();
+	setCookie("balance",balance,99);
+	$("messageBar").innerText = resultText;
+}
+
+
+function compareSecondColumn(a, b) {
+    if (a[1] === b[1]) {
+        return 0;
+    }
+    else {
+        return (a[1] < b[1]) ? -1 : 1;
+    }
+}
+
 class deck {
 	constructor(num) {
 		this.deckArray = [];
@@ -161,6 +343,10 @@ class deck {
 
 function update(){
 	if(phase == 1){ //deal
+		handArray = []
+		balance -= bet;
+		$("balanceDisplay").innerText = "Balance: $" + balance.toString();
+		setCookie("balance",balance,99);
 		myDeck = new deck(1);
 		holdArray = [false,false,false,false,false];
 		for (i=0; i<5; i++){
@@ -168,7 +354,9 @@ function update(){
 			$(i.toString()).innerHTML = cardToSymbol(thisCard);
 			handArray.push(thisCard);
 		}
-		console.log(handArray);
+		console.log("hand before draw:" + handArray);
+		$("messageBar").style.visibility = "hidden";
+		//console.log(handArray);
 		$("theOnlyButton").innerText = "Draw";
 		phase = 2;
 	} else { //draw
@@ -183,19 +371,23 @@ function update(){
 			}
 		}
 		handArray = newHand;
-		//score hand
+		console.log("hand before scoring:" + handArray);
+		//==============
+		scoreHand();
+		//==============
 		var holdTags = document.getElementsByClassName("holdTag");
 		for (j=0; j<holdTags.length; j++){
 			holdTags[j].style.visibility = "hidden";
 		}
-		console.log(handArray);
+		$("messageBar").style.visibility = "visible";
+		//console.log(handArray);
 		$("theOnlyButton").innerText = "Deal";
 		phase = 1;
 	}
 }
 function holdThis(anchorElement){
 	if(phase==2){
-		console.log(anchorElement.children[1].id);
+		//console.log(anchorElement.children[1].id);
 		if(holdArray[parseInt(anchorElement.children[1].id)] == true){
 			holdArray[parseInt(anchorElement.children[1].id)] = false;
 			anchorElement.children[0].style.visibility = "hidden";
