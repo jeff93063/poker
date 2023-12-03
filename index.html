@@ -35,8 +35,13 @@ span.card {
 button {
 	grid-column: span 5;
 	border-radius:3vw;
-	filter: drop-shadow(0 0 .5vw);
+	filter: drop-shadow(0 0 .5vw #000000);
 	height:100%;
+	font-size:10vh;
+	background-color:#368636;
+	border:0px;
+	font-weight:bold;
+	color:white;
 }
 span.holdTag {
 	font-size: 2vw;
@@ -59,12 +64,19 @@ b {
 	font-weight: normal;
 	color:red;
 }
-span#balanceDisplay {
+span#bottomBar {
 	color:white;
 	font-size:2vw;
 	text-align:center;
 	line-height:3vw;
-	height:3vw;
+	grid-column:span 5;
+}
+span#balanceDisplay {
+	float:left;
+	width:50%;
+}
+span#hiscoreDisplay {
+	width:50%;
 }
 span#messageBar {
 	width:100%;
@@ -101,8 +113,10 @@ div#gridContainer {
 	<span class="card"><a href="#" onClick="holdThis(event,this);"><span class="holdTag">Hold</span><img id="3" src="cards/back.svg" width="100%" /></a></span>
 	<span class="card"><a href="#" onClick="holdThis(event,this);"><span class="holdTag">Hold</span><img id="4" src="cards/back.svg" width="100%" /></a></span>
 	<button id="theOnlyButton" onClick="update();">Deal</button>
-	<span id="balanceDisplay"></span>
-	<span id="hiscoreDisplay"></span>
+	<span id="bottomBar">
+		<span id="balanceDisplay"></span>
+		<span id="hiscoreDisplay"></span>
+	</span>
 </div>
 <script type="text/javascript">
 
@@ -150,7 +164,12 @@ var balance = getCookie("balance");
 if(!(balance > 0)){
 	balance = 500;
 }
+var hiscore = getCookie("hiscore");
+if(!(hiscore > 0)){
+	hiscore = 500;
+}
 $("balanceDisplay").innerText = "Balance: $" + balance.toString();
+$("hiscoreDisplay").innerText = "High Score: $" + hiscore.toString();
 
 function shuffle(array) { //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 	let currentIndex = array.length, randomIndex;
@@ -335,6 +354,11 @@ function scoreHand(){
 	//===================
 	$("balanceDisplay").innerText = "Balance: $" + balance.toString();
 	setCookie("balance",balance,99);
+	if(balance > hiscore){
+		hiscore = balance;
+		setCookie("hiscore",balance,99);
+		$("hiscoreDisplay").innerText = "High Score: $" + hiscore.toString();
+	}
 	$("messageBar").innerText = resultText;
 }
 
