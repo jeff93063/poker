@@ -101,7 +101,7 @@ text { fill:white; font-size:30px; text-anchor:middle; visibility:hidden; fill-o
 <span id="messageBar">&nbsp;</span>
 <div id="gridContainer">
 	<div>
-		<svg viewbox="0 0 250 350" id="card0" class="red" onClick="holdThis(event,this);">
+		<svg viewbox="0 0 250 350" id="card0" class="red">
 			<rect class="cardBg" />
 			<rect class="cardOutline" />
 			<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
@@ -111,7 +111,7 @@ text { fill:white; font-size:30px; text-anchor:middle; visibility:hidden; fill-o
 		</svg>
 	</div>
 	<div>
-		<svg viewbox="0 0 250 350" id="card1" class="red" onClick="holdThis(event,this);">
+		<svg viewbox="0 0 250 350" id="card1" class="red">
 			<rect class="cardBg" />
 			<rect class="cardOutline" />
 			<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
@@ -121,7 +121,7 @@ text { fill:white; font-size:30px; text-anchor:middle; visibility:hidden; fill-o
 		</svg>
 	</div>
 	<div>
-		<svg viewbox="0 0 250 350" id="card2" class="red" onClick="holdThis(event,this);">
+		<svg viewbox="0 0 250 350" id="card2" class="red">
 			<rect class="cardBg" />
 			<rect class="cardOutline" />
 			<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
@@ -131,7 +131,7 @@ text { fill:white; font-size:30px; text-anchor:middle; visibility:hidden; fill-o
 		</svg>
 	</div>
 	<div>
-		<svg viewbox="0 0 250 350" id="card3" class="red" onClick="holdThis(event,this);">
+		<svg viewbox="0 0 250 350" id="card3" class="red">
 			<rect class="cardBg" />
 			<rect class="cardOutline" />
 			<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
@@ -141,7 +141,7 @@ text { fill:white; font-size:30px; text-anchor:middle; visibility:hidden; fill-o
 		</svg>
 	</div>
 	<div>
-		<svg viewbox="0 0 250 350" id="card4" class="red" onClick="holdThis(event,this);">
+		<svg viewbox="0 0 250 350" id="card4" class="red">
 			<rect class="cardBg" />
 			<rect class="cardOutline" />
 			<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
@@ -158,6 +158,15 @@ text { fill:white; font-size:30px; text-anchor:middle; visibility:hidden; fill-o
 	</span>
 </div>
 <script type="text/javascript">
+
+var allSvgs = document.getElementsByTagName("svg");
+for(i=0; i<allSvgs.length; i++){
+	if("ontouchstart" in window){
+		allSvgs[i].ontouchstart = function(){ holdThis(event,this); };
+	} else {
+		allSvgs[i].onclick = function(){ holdThis(event,this); };
+	}
+}
 
 var valuePaths = [
 	"M 81.03 50.02 L 43.4 159.25 L 60.65 159.25 L 69.53 130.76 L 112.65 130.76 L 121.53 159.25 L 138.78 159.25 L 101.15 50.02 L 81.03 50.02 z M 90.96 63.08 L 108.47 118.88 L 73.45 118.88 L 90.96 63.08 z ",
