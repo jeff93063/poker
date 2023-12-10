@@ -4,11 +4,10 @@
 <title>Poker</title>
 <link rel="manifest" href="manifest.json" />
 
-<!-- from realfavicongenerator.net except i removed leading slashes from paths-->
+<!-- from realfavicongenerator.net except i removed leading slashes from paths and incorporated site.webmanifest into manifest.json-->
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<!--<link rel="manifest" href="site.webmanifest"> incorporated this into manifest.json-->
 <link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
@@ -25,13 +24,6 @@ body {
 	padding:0px;
 	background-color:#166616;
 }
-span.card {
-	filter: drop-shadow(0 0 .5vw);
-	border-radius:2.8vw;
-	background-color:white;
-	padding:1vw;
-	line-height:0px;
-}
 button {
 	grid-column: span 5;
 	border-radius:3vw;
@@ -43,10 +35,6 @@ button {
 	font-weight:bold;
 	color:white;
 	font-family:serif;
-}
-b {
-	font-weight: normal;
-	color:red;
 }
 span#bottomBar {
 	color:white;
@@ -160,7 +148,7 @@ text { fill:white; font-size:30px; text-anchor:middle; visibility:hidden; fill-o
 <script type="text/javascript">
 
 var allSvgs = document.getElementsByTagName("svg");
-for(i=0; i<allSvgs.length; i++){
+for(i=0; i<allSvgs.length; i++){ // ontouchstart allows multitouch to select 2 cards at once, but it's mutually exclusive with onclick
 	if("ontouchstart" in window){
 		allSvgs[i].ontouchstart = function(){ holdThis(event,this); };
 	} else {
@@ -194,7 +182,7 @@ var symbolPaths = [
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function() {
 	navigator.serviceWorker
-	  .register("/serviceWorker.js")
+	  .register("serviceWorker.js")
 	  .then(res => console.log("service worker registered"))
 	  .catch(err => console.log("service worker not registered", err))
   })
