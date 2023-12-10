@@ -29,7 +29,6 @@ button {
 	border-radius:3vw;
 	filter: drop-shadow(0 0 .5vw #000000);
 	height:100%;
-	font-size:10vh;
 	background-color:#368636;
 	border:0px;
 	font-weight:bold;
@@ -37,48 +36,112 @@ button {
 	font-family:serif;
 }
 span#bottomBar {
-	color:white;
-	font-size:2vw;
 	text-align:center;
-	line-height:3vw;
 	grid-column:span 5;
+	color:white;
 }
-span#balanceDisplay {
-	float:left;
-	width:50%;
+@media (orientation: landscape) {
+	div#gridContainer {
+		position:absolute;
+		top:0px;
+		bottom:0px;
+		left:0px;
+		right:0px;
+		grid-template-rows: auto 1fr auto;
+	}
+	button {	
+		font-size:10vh;
+	}
+	span#messageBar {
+		position:absolute;
+		top:10vw;
+		font-size: 3vw;
+		line-height:4vw;
+	}
+	span#bottomBar {
+		font-size:2vw;
+		line-height:3vw;
+	}
+	span#balanceDisplay {
+		float:left;
+		width:50%;
+	}
+	.holdTag {
+		x:65px;
+		y:142px;
+		width:120px;
+		height:45px;
+	}
+	text {
+		font-size:30px;
+	}
 }
-span#hiscoreDisplay {
-	width:50%;
+@media (orientation: portrait) {
+	div#gridContainer {
+		position:absolute;
+		top:50%;
+		left:0px;
+		right:0px;
+		transform: translateY(-50%);
+		grid-template-rows: auto auto 20vw;
+	}
+	button {
+		font-size: 10vw;
+	}
+	span#messageBar {
+		/*
+		grid-column: span 5;
+		grid-row: 2 / 3;
+		font-size: 2vh;
+		line-height:3vh;
+		*/
+		position:fixed;
+		bottom:33.5vw;
+		font-size: 3vw;
+		line-height:4vw;
+	}
+	span#bottomBar {
+		grid-row: 1 / 2;
+		font-size:4vh;
+		line-height:4vh;
+	}
+	span#balanceDisplay {
+		display:block;
+	}
+	span#hiscoreDisplay {
+		display:block;
+	}
+	.holdTag {
+		x:55px;
+		y:137px;
+		width:140px;
+		height:55px;
+		font-weight:bold;
+	}
+	text {
+		font-size:40px;
+	}
 }
 span#messageBar {
 	width:100%;
 	color:white;
-	position:absolute;
-	top:12vw;
 	background-color:#000000c0;
-	font-size: 2vw;
 	text-align:center;
-	line-height:3vw;
 	z-index:5;
 	visibility:hidden;
 }
 div#gridContainer {
-	position:absolute;
-	top:0px;
-	bottom:0px;
-	left:0px;
-	right:0px;
 	display:grid;
 	grid-template-columns: repeat(5, 1fr);
-	grid-template-rows: auto 1fr auto;
+	
 	gap:1rem;
 	margin:1rem;
 }
-svg { filter: drop-shadow(0 0 .5vw); }
-.cardBg { fill-opacity:1; fill:white; width:250px; height:350px; rx:36px; }
-.cardOutline { x:21px; y:21px; width:208px; height:308px; rx:19px; stroke-opacity:1; stroke-width:16px; fill-opacity:0; }
-.holdTag { x:65px; y:142px; width:120px; height:45px; rx:5px; stroke-opacity:0; stroke-width:0px; fill:#000000c0; visibility:hidden; }
-text { fill:white; font-size:30px; text-anchor:middle; visibility:hidden; fill-opacity:1; }
+svg { filter: drop-shadow(0 0 .5vw #000000); }
+.cardBg { fill-opacity:1; fill:white; width:250px; height:350px; }
+.cardOutline { x:21px; y:21px; width:208px; height:308px; stroke-opacity:1; stroke-width:16px; fill-opacity:0; }
+.holdTag { rx:5px; stroke-opacity:0; stroke-width:0px; fill:#000000c0; visibility:hidden; }
+text { fill:white; text-anchor:middle; visibility:hidden; fill-opacity:1; }
 .red .cardOutline { stroke:#ff0000; }
 .black .cardOutline { stroke:#000000; }
 .red path { fill:#ff0000; }
@@ -86,59 +149,48 @@ text { fill:white; font-size:30px; text-anchor:middle; visibility:hidden; fill-o
 </style>
 </head>
 <body>
-<span id="messageBar">&nbsp;</span>
 <div id="gridContainer">
-	<div>
-		<svg viewbox="0 0 250 350" id="card0" class="red">
-			<rect class="cardBg" />
-			<rect class="cardOutline" />
-			<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
-			<path class="symbol" />
-			<rect class="holdTag" />
-			<text x="50%" y="50%">Hold</text>
-		</svg>
-	</div>
-	<div>
-		<svg viewbox="0 0 250 350" id="card1" class="red">
-			<rect class="cardBg" />
-			<rect class="cardOutline" />
-			<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
-			<path class="symbol" />
-			<rect class="holdTag" />
-			<text x="50%" y="50%">Hold</text>
-		</svg>
-	</div>
-	<div>
-		<svg viewbox="0 0 250 350" id="card2" class="red">
-			<rect class="cardBg" />
-			<rect class="cardOutline" />
-			<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
-			<path class="symbol" />
-			<rect class="holdTag" />
-			<text x="50%" y="50%">Hold</text>
-		</svg>
-	</div>
-	<div>
-		<svg viewbox="0 0 250 350" id="card3" class="red">
-			<rect class="cardBg" />
-			<rect class="cardOutline" />
-			<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
-			<path class="symbol" />
-			<rect class="holdTag" />
-			<text x="50%" y="50%">Hold</text>
-		</svg>
-	</div>
-	<div>
-		<svg viewbox="0 0 250 350" id="card4" class="red">
-			<rect class="cardBg" />
-			<rect class="cardOutline" />
-			<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
-			<path class="symbol" />
-			<rect class="holdTag" />
-			<text x="50%" y="50%">Hold</text>
-		</svg>
-	</div>
-	
+	<span id="messageBar">&nbsp;</span>
+	<svg viewbox="0 0 250 350" id="card0" class="red">
+		<rect class="cardBg" rx="36" />
+		<rect class="cardOutline" rx="19" />
+		<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
+		<path class="symbol" />
+		<rect class="holdTag" />
+		<text x="50%" y="50%">Hold</text>
+	</svg>
+	<svg viewbox="0 0 250 350" id="card1" class="red">
+		<rect class="cardBg" rx="36" />
+		<rect class="cardOutline" rx="19" />
+		<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
+		<path class="symbol" />
+		<rect class="holdTag" />
+		<text x="50%" y="50%">Hold</text>
+	</svg>
+	<svg viewbox="0 0 250 350" id="card2" class="red">
+		<rect class="cardBg" rx="36" />
+		<rect class="cardOutline" rx="19" />
+		<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
+		<path class="symbol" />
+		<rect class="holdTag" />
+		<text x="50%" y="50%">Hold</text>
+	</svg>
+	<svg viewbox="0 0 250 350" id="card3" class="red">
+		<rect class="cardBg" rx="36" />
+		<rect class="cardOutline" rx="19" />
+		<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
+		<path class="symbol" />
+		<rect class="holdTag" />
+		<text x="50%" y="50%">Hold</text>
+	</svg>
+	<svg viewbox="0 0 250 350" id="card4" class="red">
+		<rect class="cardBg" rx="36" />
+		<rect class="cardOutline" rx="19" />
+		<path class="value" d="m 50 50 l 150 0 l 0 250 l -150 0 l 0 250 z" />
+		<path class="symbol" />
+		<rect class="holdTag" />
+		<text x="50%" y="50%">Hold</text>
+	</svg>
 	<button id="theOnlyButton" onClick="update();">Deal</button>
 	<span id="bottomBar">
 		<span id="balanceDisplay"></span>
@@ -241,7 +293,7 @@ function shuffle(array) { //https://stackoverflow.com/questions/2450954/how-to-r
 }
 
 function scoreHand(){
-	console.log("unsorted hand:" + handArray);
+	//console.log("unsorted hand:" + handArray);
 	var winning = 0;
 	var resultText = "";
 	seen_suits = [];
@@ -249,7 +301,7 @@ function scoreHand(){
 	//console.log(handArray);
 	handArray.sort(compareSecondColumn);
 	//console.log(handArray);
-	console.log("sorted hand:" + handArray);
+	//console.log("sorted hand:" + handArray);
 	
 	for(i=0; i<5; i++){
 		var suit_already_in = false;
@@ -273,8 +325,8 @@ function scoreHand(){
 			seen_numbers.push([handArray[i][1], 1]);
 		}
 	}
-	console.log("seen_suits:" + seen_suits);
-	console.log("unsorted seen_numbers:" + seen_numbers);
+	//console.log("seen_suits:" + seen_suits);
+	//console.log("unsorted seen_numbers:" + seen_numbers);
 	
 	var flush = false;
 	var royal = false;
@@ -302,7 +354,7 @@ function scoreHand(){
 	}
 	seen_numbers.sort(compareSecondColumn);
 	seen_numbers.reverse();
-	console.log("sorted seen_numbers:" + seen_numbers);
+	//console.log("sorted seen_numbers:" + seen_numbers);
 
 	if(seen_numbers[0][1] == 4){
 		four = true;
@@ -320,7 +372,7 @@ function scoreHand(){
 		}
 	}
 
-	console.log("flush:" + flush.toString() + " royal:" + royal.toString() + " four:" + four.toString() + " three:" + three.toString() + " fullhouse:" + fullhouse.toString() + " twopair:" + twopair.toString() + " jacks:" + jacks.toString());
+	//console.log("flush:" + flush.toString() + " royal:" + royal.toString() + " four:" + four.toString() + " three:" + three.toString() + " fullhouse:" + fullhouse.toString() + " twopair:" + twopair.toString() + " jacks:" + jacks.toString());
 
 	if(flush){
 		if(royal){
@@ -419,7 +471,7 @@ function update(){
 
 			handArray.push(thisCard);
 		}
-		console.log("hand before draw:" + handArray);
+		//console.log("hand before draw:" + handArray);
 		$("messageBar").style.visibility = "hidden";
 		//console.log(handArray);
 		$("theOnlyButton").innerText = "Draw";
@@ -442,10 +494,8 @@ function update(){
 			}
 		}
 		handArray = newHand;
-		console.log("hand before scoring:" + handArray);
-		//==============
+		//console.log("hand before scoring:" + handArray);
 		scoreHand();
-		//==============
 		var holdTags = document.getElementsByClassName("holdTag");
 		var holdText = document.getElementsByTagName("text");
 		for (j=0; j<holdTags.length; j++){
