@@ -240,60 +240,6 @@ function shuffle(array) { //https://stackoverflow.com/questions/2450954/how-to-r
 	return array;
 }
 
-function cardToSymbol(card){
-	var red = false;
-	switch(card[0]) {
-		case 0:
-			suitCode = "A";
-			break;
-		case 1:
-			suitCode = "B";
-			red = true;
-			break;
-		case 2:
-			suitCode = "C";
-			red = true;
-			break;
-		case 3:
-			suitCode = "D";
-			break;
-	}
-	if(card[1] > 10){
-		valueCode = card[1] + 2;
-	} else {
-		valueCode = card[1] + 1;
-	}
-	var code = "1F0" + suitCode + valueCode.toString(16);
-	//return "\\u{1F0" + suitCode + valueCode + "}";
-	var returnString = String.fromCodePoint(parseInt(code,16));
-	if(red){
-		returnString = "<b>" + returnString + "</b>";
-	}
-	return returnString;
-}
-
-function cardToSvg(card){
-	switch(card[0]) {
-		case 0:
-			suitCode = "S";
-			break;
-		case 1:
-			suitCode = "H";
-			red = true;
-			break;
-		case 2:
-			suitCode = "D";
-			red = true;
-			break;
-		case 3:
-			suitCode = "C";
-			break;
-	}
-	valueCode = card[1] + 1
-	return "cards/" + suitCode + valueCode.toString().padStart(2, "0") + ".svg";
-}
-
-
 function scoreHand(){
 	console.log("unsorted hand:" + handArray);
 	var winning = 0;
