@@ -1,4 +1,4 @@
-const staticCacheName = "poker-static";
+const staticCacheName = "poker-static-v1";
 const assets = [
   "/poker/",
   "/poker/index.html"
@@ -10,6 +10,14 @@ self.addEventListener("install", installEvent => {
       cache.addAll(assets)
     })
   )
+});
+
+self.addEventListener('activate', evt => {
+	evt.waitUntil(
+		caches.keys().then(keys =>{
+			console.log(keys);
+		})
+	)
 });
 
 self.addEventListener("fetch", fetchEvent => {
