@@ -1,0 +1,19 @@
+<html>
+<head>
+<script type="text/javascript">
+window.addEventListener("gamepadconnected", (e) => {
+	document.getElementById("outputSpan").innerText = "Gamepad connected at index " +
+		e.gamepad.index + ": " +
+		e.gamepad.id + ". " + 
+		e.gamepad.buttons.length + " buttons, " + 
+		e.gamepad.axes.length + " axes.";
+});
+</script>
+</head>
+<body>
+<span id="outputSpan">nothing</span>
+<p><a href="https://gamepad-demo.glitch.me/">https://gamepad-demo.glitch.me/</a>
+<p><a href="https://luser.github.io/gamepadtest/">https://luser.github.io/gamepadtest/</a>
+<p><a href="https://hardwaretester.com/gamepad">https://hardwaretester.com/gamepad</a>
+</body>
+</html>
